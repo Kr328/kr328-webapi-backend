@@ -1,26 +1,23 @@
 package com.github.kr328.webapi.api
 
-import com.github.kr328.webapi.Global
+import com.github.kr328.webapi.Defaults
 import com.github.kr328.webapi.model.Clash
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object Provider {
-    private val httpClient = HttpClient(OkHttp) {
-        followRedirects = true
-        expectSuccess = true
-    }
-
-    suspend fun processProfile2Provider(url: String): String {
-        val data = httpClient.get<String>(url)
+    suspend fun processProfile2Provider(url: String, filterBlack: Regex, filterWhite: Regex): String {
+        val data = Defaults.DEFAULT_HTTP_CLIENT.get<String>(url)
 
         return withContext(Dispatchers.IO) {
-            val clash = Global.DEFAULT_YAML_MAPPER.readValue(data, Clash::class.java)
+            val clash = Defaults.DEFAULT_YAML_MAPPER.readValue(data, Clash::class.java)
 
-            Global.DEFAULT_YAML_MAPPER.writeValueAsString(mapOf("proxies" to clash.proxy))
+            val proxies = clash.proxy?.filter {
+                filterWhite.matches(it.name) && !filterBlack.matches(it.name)
+            } ?: emptyList()
+
+            Defaults.DEFAULT_YAML_MAPPER.writeValueAsString(mapOf("proxies" to proxies))
         }
     }
 }

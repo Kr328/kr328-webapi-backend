@@ -2,14 +2,12 @@ package com.github.kr328.webapi.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kr328.webapi.Constants
-import com.github.kr328.webapi.Global
+import com.github.kr328.webapi.Defaults
 import com.github.kr328.webapi.model.Clash
 import com.github.kr328.webapi.model.Preprocessor
 import com.github.kr328.webapi.model.ProxyGroup
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -18,13 +16,6 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 object Preclash {
-    private val REGEX_MATCH_NONE = Regex("")
-    private val REGEX_MATCH_ALL = Regex(".*")
-
-    private val httpClient = HttpClient(OkHttp) {
-        followRedirects = true
-        expectSuccess = true
-    }
     private val httpCache = CacheBuilder.newBuilder()
         .maximumSize(20)
         .expireAfterWrite(60, TimeUnit.SECONDS)
@@ -32,16 +23,16 @@ object Preclash {
 
     suspend fun process(userId: Long): String {
         val preprocessor: Preprocessor = withContext(Dispatchers.IO) {
-            Global.DEFAULT_YAML_MAPPER.readValue<Preprocessor>(Constants.DATA_DIR.resolve("$userId/data.yml"))
+            Defaults.DEFAULT_YAML_MAPPER.readValue<Preprocessor>(Constants.DATA_DIR.resolve("$userId/data.yml"))
         }
 
         val sources = preprocessor.source
             .filter { it.type == "url" }
             .mapNotNull { it.url }
             .toSet()
-            .map { GlobalScope.async { httpCache.getOrLoad(it) { httpClient.get(it) } } }
+            .map { GlobalScope.async { httpCache.getOrLoad(it) { Defaults.DEFAULT_HTTP_CLIENT.get(it) } } }
             .map { it.await() }
-            .map { Global.DEFAULT_YAML_MAPPER.readValue(it, Clash::class.java) }
+            .map { Defaults.DEFAULT_YAML_MAPPER.readValue(it, Clash::class.java) }
             .flatMap { it.proxy ?: emptyList() }
             .map { it.name to it }
             .toMap()
@@ -51,12 +42,12 @@ object Preclash {
         val filters = preprocessor.dispatcher
             .flatMap { listOf(it.filters?.white, it.filters?.black) }
             .filterNotNull()
-            .map { it to Regex(it) }
+            .map { it to Regex(it, setOf(RegexOption.IGNORE_CASE)) }
             .toMap()
 
         val groups = preprocessor.dispatcher.map { dispatcher ->
-            val black = filters[dispatcher.filters?.black] ?: REGEX_MATCH_ALL
-            val white = filters[dispatcher.filters?.white] ?: REGEX_MATCH_NONE
+            val black = filters[dispatcher.filters?.black] ?: Constants.REGEX_MATCH_ALL
+            val white = filters[dispatcher.filters?.white] ?: Constants.REGEX_MATCH_NONE
 
             val proxies = sources
                 .map {
@@ -82,7 +73,7 @@ object Preclash {
             .filter { it.type == "url" }
             .map { it.url }
             .toSet()
-            .map { GlobalScope.async { it to httpCache.getOrLoad(it) { httpClient.get(it) } } }
+            .map { GlobalScope.async { it to httpCache.getOrLoad(it) { Defaults.DEFAULT_HTTP_CLIENT.get(it) } } }
             .map { it.await() }
             .toMap()
 
@@ -95,7 +86,7 @@ object Preclash {
                     it.source to it.target
                 }?.toMap() ?: emptyMap()
 
-                ruleSet.first to Global.DEFAULT_YAML_MAPPER.readValue(ruleSet.second, Clash::class.java).rule?.map {
+                ruleSet.first to Defaults.DEFAULT_YAML_MAPPER.readValue(ruleSet.second, Clash::class.java).rule?.map {
                     it.copy(target = map[it.target] ?: it.target)
                 }
             }
@@ -126,7 +117,7 @@ object Preclash {
         }
 
         return withContext(Dispatchers.IO) {
-            Global.DEFAULT_YAML_MAPPER.writeValueAsString(result)
+            Defaults.DEFAULT_YAML_MAPPER.writeValueAsString(result)
         }
     }
 

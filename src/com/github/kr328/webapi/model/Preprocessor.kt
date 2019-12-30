@@ -37,7 +37,7 @@ data class Preprocessor(
         @JsonProperty("proxies-filters") val filters: Filters?,
         @JsonProperty("flat-proxies") val proxies: List<String>?
     ) {
-        private val data: LinkedHashMap<String, Any> = LinkedHashMap()
+        private val data: MutableMap<String, Any> = mutableMapOf()
 
         @JsonAnySetter
         fun setData(name: String, value: Any) {

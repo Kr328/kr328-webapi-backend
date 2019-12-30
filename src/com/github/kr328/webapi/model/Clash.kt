@@ -17,7 +17,7 @@ data class Clash(
     @JsonProperty("Rule") val rule: List<Rule>?
 ) {
     @JsonIgnore
-    val general: LinkedHashMap<String, Any> = LinkedHashMap()
+    val general: MutableMap<String, Any> = mutableMapOf()
 
     @JsonAnySetter
     fun setGeneral(name: String, value: Any) {

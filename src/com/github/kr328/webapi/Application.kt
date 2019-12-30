@@ -32,14 +32,34 @@ fun Application.module() {
     routing {
         get("/config2provider") {
             val url = call.request.queryParameters["url"]
+            val black = call.request.queryParameters["black"]
+            val white = call.request.queryParameters["white"]
 
             if (url == null) {
                 call.respond(HttpStatusCode.BadRequest, "Query param \"url\" required")
                 return@get
             }
 
+            val blackRegex = try {
+                black?.let {
+                    Regex(it, setOf(RegexOption.IGNORE_CASE))
+                } ?: Constants.REGEX_MATCH_NONE
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, "Query param \"black\" invalid ${e.message}")
+                return@get
+            }
+
+            val whiteRegex = try {
+                white?.let {
+                    Regex(it, setOf(RegexOption.IGNORE_CASE))
+                } ?: Constants.REGEX_MATCH_ALL
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, "Query param \"white\" invalid ${e.message}")
+                return@get
+            }
+
             val result: String = try {
-                Provider.processProfile2Provider(url)
+                Provider.processProfile2Provider(url, blackRegex, whiteRegex)
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.Gone, e.message ?: "Process failure")
                 return@get
@@ -67,7 +87,7 @@ fun Application.module() {
 
             try {
                 val metadata: Metadata = withContext(Dispatchers.IO) {
-                    Global.DEFAULT_JSON_MAPPER.readValue<Metadata>(Constants.DATA_DIR.resolve("$userId/metadata.json"))
+                    Defaults.DEFAULT_JSON_MAPPER.readValue<Metadata>(Constants.DATA_DIR.resolve("$userId/metadata.json"))
                 }
 
                 if (secret != metadata.secret)

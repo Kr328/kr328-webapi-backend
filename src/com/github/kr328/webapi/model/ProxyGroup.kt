@@ -14,13 +14,11 @@ data class ProxyGroup(
     @JsonProperty(required = false) val proxies: List<String>?
 ) {
     @JsonIgnore
-    val data: LinkedHashMap<String, Any> = LinkedHashMap()
+    @get:JsonAnyGetter
+    val data: MutableMap<String, Any> = mutableMapOf()
 
     @JsonAnySetter
     fun setData(name: String, value: Any) {
         data[name] = value
     }
-
-    @JsonAnyGetter
-    fun getData(): Map<String, Any> = data
 }
