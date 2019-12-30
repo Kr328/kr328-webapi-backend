@@ -1,14 +1,9 @@
 package com.github.kr328.webapi.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.kr328.webapi.Constants
 import com.github.kr328.webapi.Global
 import com.github.kr328.webapi.model.Clash
-import com.github.kr328.webapi.model.Metadata
 import com.github.kr328.webapi.model.Preprocessor
 import com.github.kr328.webapi.model.ProxyGroup
 import com.google.common.cache.Cache
@@ -19,12 +14,7 @@ import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileNotFoundException
 import java.util.concurrent.TimeUnit
 
 object Preclash {

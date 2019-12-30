@@ -1,9 +1,5 @@
 package com.github.kr328.webapi.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.kr328.webapi.Global
 import com.github.kr328.webapi.model.Clash
 import io.ktor.client.HttpClient

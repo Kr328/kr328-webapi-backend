@@ -1,8 +1,6 @@
 package com.github.kr328.webapi
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.kr328.webapi.api.Preclash
 import com.github.kr328.webapi.api.Provider
 import com.github.kr328.webapi.model.Metadata
@@ -75,9 +73,13 @@ fun Application.module() {
                 if (secret != metadata.secret)
                     throw FileNotFoundException()
 
-                call.response.header(HttpHeaders.ContentDisposition,
-                    ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName,
-                        "${metadata.username}.yaml").toString())
+                call.response.header(
+                    HttpHeaders.ContentDisposition,
+                    ContentDisposition.Attachment.withParameter(
+                        ContentDisposition.Parameters.FileName,
+                        "${metadata.username}.yaml"
+                    ).toString()
+                )
                 call.respondText(contentType = Constants.CONTENT_TYPE_YAML) {
                     Preclash.process(userId)
                 }

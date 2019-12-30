@@ -1,6 +1,8 @@
 package com.github.kr328.webapi.model
 
-import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
@@ -28,19 +30,19 @@ data class Clash(
 
             gen.writeStartObject()
 
-            for ((k,v) in value.general ) {
+            for ((k, v) in value.general) {
                 gen.writeObjectField(k, v)
             }
 
-            if ( value.proxy != null ) {
+            if (value.proxy != null) {
                 gen.writeObjectField("Proxy", value.proxy)
             }
 
-            if ( value.groups != null ) {
+            if (value.groups != null) {
                 gen.writeObjectField("Proxy Group", value.groups)
             }
 
-            if ( value.rule != null ) {
+            if (value.rule != null) {
                 gen.writeObjectField("Rule", value.rule)
             }
 
