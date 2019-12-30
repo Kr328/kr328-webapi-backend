@@ -17,10 +17,10 @@ data class Clash(
     @JsonProperty("Rule") val rule: List<Rule>?
 ) {
     @JsonIgnore
-    val general: MutableMap<String, Any> = mutableMapOf()
+    val general: MutableMap<String, Any?> = mutableMapOf()
 
     @JsonAnySetter
-    fun setGeneral(name: String, value: Any) {
+    fun setGeneral(name: String, value: Any?) {
         general[name] = value
     }
 

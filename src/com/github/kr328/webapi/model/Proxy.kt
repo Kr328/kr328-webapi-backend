@@ -11,10 +11,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 data class Proxy(val name: String) {
     @JsonIgnore
     @get:JsonAnyGetter
-    val data: MutableMap<String, Any> = mutableMapOf()
+    val data: MutableMap<String, Any?> = mutableMapOf()
 
     @JsonAnySetter
-    fun setData(name: String, value: Any) {
+    fun setData(name: String, value: Any?) {
         data[name] = value
     }
 }
