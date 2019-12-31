@@ -6,21 +6,16 @@ import com.github.kr328.webapi.Defaults
 import com.github.kr328.webapi.model.Clash
 import com.github.kr328.webapi.model.Preprocessor
 import com.github.kr328.webapi.model.ProxyGroup
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
-import io.ktor.client.request.get
+import com.github.kr328.webapi.utils.mapParallel
+import com.github.kr328.webapi.utils.readValueAsync
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 
 object Preclash {
-    private val httpCache = CacheBuilder.newBuilder()
-        .maximumSize(20)
-        .expireAfterWrite(60, TimeUnit.SECONDS)
-        .build<String, String>()
-
     suspend fun process(userId: Long): String {
         val preprocessor: Preprocessor = withContext(Dispatchers.IO) {
             Defaults.DEFAULT_YAML_MAPPER.readValue<Preprocessor>(Constants.DATA_DIR.resolve("$userId/data.yml"))
@@ -29,10 +24,9 @@ object Preclash {
         val sources = preprocessor.source
             .filter { it.type == "url" }
             .mapNotNull { it.url }
-            .toSet()
-            .map { GlobalScope.async { httpCache.getOrLoad(it) { Defaults.DEFAULT_HTTP_CLIENT.get(it) } } }
-            .map { it.await() }
-            .map { Defaults.DEFAULT_YAML_MAPPER.readValue(it, Clash::class.java) }
+            .mapParallel { Defaults.DEFAULT_HTTP_CLIENT.get(it) }
+            .map { Defaults.DEFAULT_YAML_MAPPER.readValueAsync(it, Clash::class.java) }
+            .toList()
             .flatMap { it.proxy ?: emptyList() }
             .map { it.name to it }
             .toMap()
@@ -69,16 +63,13 @@ object Preclash {
         }
 
         val ruleSetContent = (preprocessor.ruleSet ?: emptyList())
-            .asSequence()
             .filter { it.type == "url" }
             .map { it.url }
-            .toSet()
-            .map { GlobalScope.async { it to httpCache.getOrLoad(it) { Defaults.DEFAULT_HTTP_CLIENT.get(it) } } }
-            .map { it.await() }
+            .mapParallel { it to Defaults.DEFAULT_HTTP_CLIENT.get(it) }
             .toMap()
 
         val ruleSets = (preprocessor.ruleSet ?: emptyList())
-            .asSequence()
+            .asFlow()
             .filter { it.type == "url" }
             .map { it to ruleSetContent[it.url] }
             .map { ruleSet ->
@@ -86,7 +77,7 @@ object Preclash {
                     it.source to it.target
                 }?.toMap() ?: emptyMap()
 
-                ruleSet.first to Defaults.DEFAULT_YAML_MAPPER.readValue(ruleSet.second, Clash::class.java).rule?.map {
+                ruleSet.first to Defaults.DEFAULT_YAML_MAPPER.readValueAsync(ruleSet.second ?: "", Clash::class.java).rule?.map {
                     it.copy(target = map[it.target] ?: it.target)
                 }
             }
@@ -119,13 +110,5 @@ object Preclash {
         return withContext(Dispatchers.IO) {
             Defaults.DEFAULT_YAML_MAPPER.writeValueAsString(result)
         }
-    }
-
-    private suspend fun Cache<String, String>.getOrLoad(key: String, load: suspend () -> String): String {
-        val data = this.getIfPresent(key) ?: load()
-
-        this.put(key, data)
-
-        return data
     }
 }
