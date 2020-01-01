@@ -1,4 +1,4 @@
-package com.github.kr328.webapi.client
+package com.github.kr328.webapi.backend.client
 
 import com.google.common.cache.CacheBuilder
 import io.ktor.client.HttpClient
@@ -68,7 +68,7 @@ class CachedHttpClient {
                     }
                 }
                 is GetRequestResultEvent -> {
-                    requestMap.computeIfPresent(event.url) { url, list ->
+                    requestMap.computeIfPresent(event.url) { _, list ->
                         list.forEach {
                             if ( event.throwable != null ) {
                                 it.completeExceptionally(event.throwable)

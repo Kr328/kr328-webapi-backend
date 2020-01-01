@@ -1,13 +1,13 @@
-package com.github.kr328.webapi.api
+package com.github.kr328.webapi.backend.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.kr328.webapi.Constants
-import com.github.kr328.webapi.Defaults
+import com.github.kr328.webapi.backend.Constants
+import com.github.kr328.webapi.backend.Defaults
 import com.github.kr328.webapi.model.Clash
 import com.github.kr328.webapi.model.Preprocessor
 import com.github.kr328.webapi.model.ProxyGroup
-import com.github.kr328.webapi.utils.mapParallel
-import com.github.kr328.webapi.utils.readValueAsync
+import com.github.kr328.webapi.backend.utils.mapParallel
+import com.github.kr328.webapi.backend.utils.readValueAsync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
@@ -18,7 +18,8 @@ import kotlinx.coroutines.withContext
 object Preclash {
     suspend fun process(userId: Long): String {
         val preprocessor: Preprocessor = withContext(Dispatchers.IO) {
-            Defaults.DEFAULT_YAML_MAPPER.readValue<Preprocessor>(Constants.DATA_DIR.resolve("$userId/data.yml"))
+            Defaults.DEFAULT_YAML_MAPPER.readValue<Preprocessor>(
+                Constants.DATA_DIR.resolve("$userId/data.yml"))
         }
 
         val sources = preprocessor.source
@@ -26,7 +27,6 @@ object Preclash {
             .mapNotNull { it.url }
             .mapParallel { Defaults.DEFAULT_HTTP_CLIENT.get(it) }
             .map { Defaults.DEFAULT_YAML_MAPPER.readValueAsync(it, Clash::class.java) }
-            .toList()
             .flatMap { it.proxy ?: emptyList() }
             .map { it.name to it }
             .toMap()

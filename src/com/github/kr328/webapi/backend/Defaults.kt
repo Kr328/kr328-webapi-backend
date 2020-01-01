@@ -1,10 +1,10 @@
-package com.github.kr328.webapi
+package com.github.kr328.webapi.backend
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.github.kr328.webapi.client.CachedHttpClient
+import com.github.kr328.webapi.backend.client.CachedHttpClient
 
 object Defaults {
     val DEFAULT_JSON_MAPPER: ObjectMapper = ObjectMapper().registerKotlinModule()

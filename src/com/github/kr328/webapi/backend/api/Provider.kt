@@ -1,6 +1,6 @@
-package com.github.kr328.webapi.api
+package com.github.kr328.webapi.backend.api
 
-import com.github.kr328.webapi.Defaults
+import com.github.kr328.webapi.backend.Defaults
 import com.github.kr328.webapi.model.Clash
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

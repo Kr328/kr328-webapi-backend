@@ -1,4 +1,4 @@
-package com.github.kr328.webapi.utils
+package com.github.kr328.webapi.backend.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers

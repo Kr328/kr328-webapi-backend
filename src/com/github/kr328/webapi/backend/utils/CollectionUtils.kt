@@ -1,4 +1,4 @@
-package com.github.kr328.webapi.utils
+package com.github.kr328.webapi.backend.utils
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async

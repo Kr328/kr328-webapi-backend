@@ -1,8 +1,8 @@
-package com.github.kr328.webapi
+package com.github.kr328.webapi.backend
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.kr328.webapi.api.Preclash
-import com.github.kr328.webapi.api.Provider
+import com.github.kr328.webapi.backend.api.Preclash
+import com.github.kr328.webapi.backend.api.Provider
 import com.github.kr328.webapi.model.Metadata
 import com.google.common.cache.CacheBuilder
 import io.ktor.application.Application
@@ -87,7 +87,8 @@ fun Application.module() {
 
             try {
                 val metadata: Metadata = withContext(Dispatchers.IO) {
-                    Defaults.DEFAULT_JSON_MAPPER.readValue<Metadata>(Constants.DATA_DIR.resolve("$userId/metadata.json"))
+                    Defaults.DEFAULT_JSON_MAPPER.readValue<Metadata>(
+                        Constants.DATA_DIR.resolve("$userId/metadata.json"))
                 }
 
                 if (secret != metadata.secret)
