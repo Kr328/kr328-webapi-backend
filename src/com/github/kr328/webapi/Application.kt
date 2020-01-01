@@ -97,7 +97,7 @@ fun Application.module() {
                     HttpHeaders.ContentDisposition,
                     ContentDisposition.Attachment.withParameter(
                         ContentDisposition.Parameters.FileName,
-                        "${metadata.username}.yaml"
+                        "${metadata.username ?: metadata.userId}.yaml"
                     ).toString()
                 )
                 call.respondText(contentType = Constants.CONTENT_TYPE_YAML) {
