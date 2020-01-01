@@ -40,7 +40,7 @@ object Preclash {
             .toMap()
 
         val groups = preprocessor.dispatcher.map { dispatcher ->
-            val black = filters[dispatcher.filters?.black] ?: Constants.REGEX_MATCH_ALL
+            val black = filters[dispatcher.filters?.black] ?: Constants.REGEX_MATCH_NONE
             val white = filters[dispatcher.filters?.white] ?: Constants.REGEX_MATCH_NONE
 
             val proxies = sources
