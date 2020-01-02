@@ -35,7 +35,7 @@ data class Preprocessor(
     data class Dispatcher(
         @JsonProperty(required = true) val name: String,
         @JsonProperty("proxies-filters") val filters: Filters?,
-        @JsonProperty("flat-proxies") val proxies: List<String>?
+        @JsonProperty("flat-proxies") val proxies: List<String> = emptyList()
     ) {
         private val data: MutableMap<String, Any> = mutableMapOf()
 

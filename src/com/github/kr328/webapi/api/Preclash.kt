@@ -55,7 +55,7 @@ object Preclash {
                 usedSource.add(it)
             }
 
-            val p = (proxies + (dispatcher.proxies ?: emptyList())).takeIf { it.isNotEmpty() } ?: listOf("REJECT")
+            val p = (dispatcher.proxies + proxies).takeIf { it.isNotEmpty() } ?: listOf("REJECT")
 
             ProxyGroup(dispatcher.name, p).apply {
                 data.putAll(dispatcher.getData())
