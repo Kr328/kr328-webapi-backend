@@ -6,9 +6,9 @@ import com.github.kr328.webapi.bot.bot.network.updates.Message
 import com.github.kr328.webapi.bot.bot.network.updates.Update
 import com.github.kr328.webapi.bot.bot.scopes.TextMessageScope
 
-class TextMessageMatcher(private val handler: suspend TextMessageScope.() -> Unit) : BaseMatcher() {
+class TextMessageMatcher(private val handler: suspend TextMessageScope.() -> Unit) : Matcher() {
     override suspend fun handleIfMatched(bot: Bot, update: Update): Boolean {
-        val message = update.message ?: return false
+        val message = update.message ?: update.editedMessage ?: update.channelPost ?: return false
         val text = message.text ?: return false
 
         val scope = TextMessageScopeImpl(text, message, message.chat, update, bot)

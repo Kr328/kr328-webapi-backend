@@ -2,11 +2,9 @@ package com.github.kr328.webapi.bot.bot
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.kr328.webapi.bot.bot.matches.BaseMatcher
+import com.github.kr328.webapi.bot.bot.matches.Matcher
 import com.github.kr328.webapi.bot.bot.network.Client
 import com.github.kr328.webapi.bot.bot.network.updates.Update
-import com.github.kr328.webapi.bot.bot.scopes.BaseScope
-import io.ktor.client.engine.okhttp.OkHttp
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -18,7 +16,7 @@ class Bot(token: String) : CoroutineScope {
     override val coroutineContext = job
     val client: Client
 
-    private val matchers = mutableListOf<BaseMatcher>()
+    private val matchers = mutableListOf<Matcher>()
 
     val isRunning: Boolean
         get() = !job.isCancelled && !job.isCancelled
@@ -48,8 +46,6 @@ class Bot(token: String) : CoroutineScope {
             while (isRunning) {
                 val updates = client.getUpdates(offset).result
 
-                println("Response")
-
                 if ( updates.isEmpty() )
                     continue
 
@@ -64,7 +60,7 @@ class Bot(token: String) : CoroutineScope {
         }
     }
 
-    fun onUpdate(matcherBuilder: MutableList<BaseMatcher>.() -> Unit) {
+    fun onUpdate(matcherBuilder: MutableList<Matcher>.() -> Unit) {
         matcherBuilder(matchers)
     }
 

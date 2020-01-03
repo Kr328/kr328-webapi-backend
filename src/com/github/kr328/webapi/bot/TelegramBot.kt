@@ -53,8 +53,6 @@ fun main() = runBlocking {
     bot.onUpdate {
         command("start") {
             sendText("WDNMD")
-
-            fallthrough
         }
         command("stop") {
             bot.shutdown()
