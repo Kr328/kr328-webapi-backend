@@ -8,29 +8,8 @@ import io.ktor.client.features.json.JacksonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.get
 import kotlinx.coroutines.isActive
+import retrofit2.Retrofit
 
-class Client(private val token: String) {
-    private val httpClient = HttpClient(OkHttp) {
-        install(JsonFeature) {
-            serializer = JacksonSerializer {
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            }
-        }
-
-        expectSuccess = true
-    }
-
-    val isActive: Boolean
-        get() = httpClient.isActive
-
-    fun shutdown() {
-        httpClient.close()
-    }
-
-    suspend fun getUpdates(offset: Long) =
-        get<List<Update>>("getUpdates?offset=$offset")
-
-    private suspend inline fun <reified T>get(uri: String): T {
-        return httpClient.get("https://api.telegram.org/${token}/${uri}")
-    }
+class Client(val retrofit: Retrofit):
+    IClient by retrofit.create(IClient::class.java) {
 }

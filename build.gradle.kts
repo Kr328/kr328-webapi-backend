@@ -6,6 +6,7 @@ val coroutines_version: String by project
 val logback_version: String by project
 val jackson_version: String by project
 val guava_version: String by project
+val retrofit_version: String by project
 
 buildscript {
     repositories {
@@ -67,6 +68,8 @@ dependencies {
     implementation("io.ktor:ktor-client-json-jvm:$ktor_version")
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("com.google.guava:guava:$guava_version")
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-jackson:$retrofit_version")
     implementation("com.fasterxml.jackson.core:jackson-core:$jackson_version")
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jackson_version")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
