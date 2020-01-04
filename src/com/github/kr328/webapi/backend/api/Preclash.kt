@@ -1,6 +1,7 @@
 package com.github.kr328.webapi.backend.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.github.kr328.webapi.Commons
 import com.github.kr328.webapi.backend.Constants
 import com.github.kr328.webapi.backend.Defaults
 import com.github.kr328.webapi.backend.utils.mapParallel
@@ -14,12 +15,13 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
+import java.io.File
 
 object Preclash {
     suspend fun process(userId: Long): String {
         val preprocessor: Preprocessor = withContext(Dispatchers.IO) {
             Defaults.DEFAULT_YAML_MAPPER.readValue<Preprocessor>(
-                Constants.DATA_DIR.resolve("$userId/data.yml")
+                File(Commons.DATA_PATH, "$userId/data.yml")
             )
         }
 

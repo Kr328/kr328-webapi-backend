@@ -9,7 +9,11 @@ interface MessageScope : ChatScope {
     suspend fun replyText(
         text: String,
         markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}
-    ) {
-        sendText(text, message.messageId, markupBuilderBlock)
+    ): Message {
+        return sendText(text, message.messageId, markupBuilderBlock)
+    }
+
+    suspend fun delete() {
+        deleteMessage(message.messageId)
     }
 }

@@ -1,8 +1,7 @@
 package com.github.kr328.webapi.bot.bot.network
 
 import com.github.kr328.webapi.bot.bot.network.markup.Markup
-import com.github.kr328.webapi.bot.bot.network.updates.File
-import com.github.kr328.webapi.bot.bot.network.updates.Update
+import com.github.kr328.webapi.bot.bot.network.updates.*
 import retrofit2.http.*
 
 interface IClient {
@@ -17,14 +16,22 @@ interface IClient {
         @Query("file_id") fileId: String
     ): Response<File>
 
+    @GET("getUserProfilePhotos")
+    suspend fun getUserProfilePhotos(
+        @Query("user_id") userId: Long,
+        @Query("offset") offset: Long?,
+        @Query("limit") limit: Long?
+    ): Response<UserProfilePhotos>
+
     @FormUrlEncoded
     @POST("sendMessage")
     suspend fun sendMessage(
         @Field("chat_id") chatId: Long,
         @Field("text") text: String,
         @Field("reply_to_message_id") replyToMessageId: Long?,
-        @Field("reply_markup") replyMarkup: Markup?
-    )
+        @Field("reply_markup") replyMarkup: Markup?,
+        @Field("parse_mode") parseMode: String?
+    ): Response<Message>
 
     @FormUrlEncoded
     @POST("answerCallbackQuery")
@@ -35,4 +42,10 @@ interface IClient {
         @Field("url") url: String?,
         @Field("cache_time") cacheTime: Int?
     )
+
+    @FormUrlEncoded
+    @POST("deleteMessage")
+    suspend fun deleteMessage(
+        @Field("chat_id") chatId: Long,
+        @Field("message_id") messageId: Long)
 }

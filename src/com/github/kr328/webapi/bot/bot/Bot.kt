@@ -20,7 +20,12 @@ class Bot(val token: String, proxy: Proxy? = null) : CoroutineScope {
     private val job = Job()
     override val coroutineContext = job
     val client: Client
-    val http: OkHttpClient
+    val http: OkHttpClient = OkHttpClient().newBuilder()
+        .proxy(proxy)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(120, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
 
     private val logger = LoggerFactory.getLogger(Bot::class.java)
     private val matchers = mutableListOf<Matcher>()
@@ -29,13 +34,6 @@ class Bot(val token: String, proxy: Proxy? = null) : CoroutineScope {
         get() = !job.isCancelled && !job.isCancelled
 
     init {
-        http = OkHttpClient().newBuilder()
-            .proxy(proxy)
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.telegram.org/bot$token/")
             .client(http)

@@ -1,6 +1,7 @@
 package com.github.kr328.webapi.backend
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.github.kr328.webapi.Commons
 import com.github.kr328.webapi.backend.api.Preclash
 import com.github.kr328.webapi.backend.api.Provider
 import com.github.kr328.webapi.model.Metadata
@@ -18,6 +19,7 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.FileNotFoundException
 import java.util.concurrent.TimeUnit
 
@@ -88,7 +90,7 @@ fun Application.module() {
             try {
                 val metadata: Metadata = withContext(Dispatchers.IO) {
                     Defaults.DEFAULT_JSON_MAPPER.readValue<Metadata>(
-                        Constants.DATA_DIR.resolve("$userId/metadata.json")
+                        File(Commons.DATA_PATH, "$userId/metadata.json")
                     )
                 }
 
