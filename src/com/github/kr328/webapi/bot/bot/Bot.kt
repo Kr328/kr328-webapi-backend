@@ -1,17 +1,20 @@
 package com.github.kr328.webapi.bot.bot
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kr328.webapi.bot.bot.matches.Matcher
 import com.github.kr328.webapi.bot.bot.network.Client
 import com.github.kr328.webapi.bot.bot.network.updates.Update
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.util.concurrent.TimeUnit
 
-class Bot(token: String) : CoroutineScope {
+class Bot(token: String, proxy: Proxy? = null) : CoroutineScope {
     private val job = Job()
     override val coroutineContext = job
     val client: Client
@@ -23,6 +26,7 @@ class Bot(token: String) : CoroutineScope {
 
     init {
         val http = OkHttpClient().newBuilder()
+            .proxy(proxy)
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -31,10 +35,7 @@ class Bot(token: String) : CoroutineScope {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.telegram.org/bot$token/")
             .client(http)
-            .addConverterFactory(JacksonConverterFactory.create(
-                ObjectMapper()
-                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            ))
+            .addConverterFactory(JacksonConverterFactory.create(Defaults.DEFAULT_JSON_MAPPER))
             .build()
         client = Client(retrofit)
     }

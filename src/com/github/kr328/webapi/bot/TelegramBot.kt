@@ -6,6 +6,8 @@ import com.github.kr328.webapi.bot.bot.matches.match
 import com.github.kr328.webapi.bot.bot.matches.text
 import io.ktor.application.Application
 import kotlinx.coroutines.*
+import java.net.InetSocketAddress
+import java.net.Proxy
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
@@ -52,7 +54,16 @@ fun main() = runBlocking {
 
     bot.onUpdate {
         command("start") {
-            sendText("WDNMD")
+            sendText("Options") {
+                setInlineKeyboard {
+                    row {
+                        item("Generate 204", callbackData = "generate_204")
+                    }
+                    row {
+                        item("Feedback", callbackData = "feedback")
+                    }
+                }
+            }
         }
         command("stop") {
             bot.shutdown()
