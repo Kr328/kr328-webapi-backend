@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Response<T>(@JsonProperty("ok") val ok: Boolean, @JsonProperty("result") val result: T) {
     init {
-        if ( !ok )
+        if (!ok)
             throw IllegalStateException("Response not successfully")
     }
 }

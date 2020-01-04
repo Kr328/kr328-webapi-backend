@@ -18,6 +18,9 @@ fun MutableList<Matcher>.callback(data: String, handler: suspend CallbackQuerySc
     add(CallbackQueryMatcher(data, handler))
 }
 
-fun MutableList<Matcher>.match(predict: suspend (Update) -> Boolean = { true }, handler: suspend UpdateScope.() -> Unit) {
+fun MutableList<Matcher>.match(
+    predict: suspend (Update) -> Boolean = { true },
+    handler: suspend UpdateScope.() -> Unit
+) {
     add(MatchMatcher(predict, handler))
 }

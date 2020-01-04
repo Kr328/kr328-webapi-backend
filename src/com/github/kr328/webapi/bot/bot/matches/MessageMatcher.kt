@@ -22,5 +22,5 @@ class MessageMatcher(private val handler: suspend MessageScope.() -> Unit) : Mat
         override val chat: Chat,
         override val update: Update,
         override val bot: Bot
-    ): MessageScope, BaseScopeImpl()
+    ) : MessageScope, BaseScopeImpl()
 }

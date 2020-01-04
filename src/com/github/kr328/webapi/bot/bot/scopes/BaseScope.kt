@@ -11,10 +11,12 @@ interface BaseScope {
         bot.shutdown()
     }
 
-    suspend fun sendTextTo(text: String,
-                           charId: Long,
-                           replyMessageId: Long? = null,
-                           markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}) {
+    suspend fun sendTextTo(
+        text: String,
+        charId: Long,
+        replyMessageId: Long? = null,
+        markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}
+    ) {
         val markupBuilder = MessageMarkupBuilder()
 
         markupBuilderBlock(markupBuilder)
@@ -22,11 +24,13 @@ interface BaseScope {
         bot.client.sendMessage(charId, text, replyMessageId, markupBuilder.markup)
     }
 
-    suspend fun answerCallbackQuery(callbackQueryId: String,
-                                    text: String? = null ,
-                                    showAlert: Boolean? = null,
-                                    url: String? = null,
-                                    cacheTime: Int? = null) {
+    suspend fun answerCallbackQuery(
+        callbackQueryId: String,
+        text: String? = null,
+        showAlert: Boolean? = null,
+        url: String? = null,
+        cacheTime: Int? = null
+    ) {
         bot.client.answerCallbackQuery(callbackQueryId, text, showAlert, url, cacheTime)
     }
 }

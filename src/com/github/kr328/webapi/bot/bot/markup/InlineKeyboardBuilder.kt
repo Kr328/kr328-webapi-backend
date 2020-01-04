@@ -15,13 +15,15 @@ class InlineKeyboardBuilder {
         data.add(row)
     }
 
-    fun MutableList<InlineKeyboardButton>.item(text: String,
-                                               url: String? = null,
-                                               callbackData: String? = null,
-                                               switchInlineQuery: String? = null,
-                                               switchInlineQueryCurrentChat: String? = null,
-                                               pay: Boolean? = null) {
-        add(InlineKeyboardButton(text,url,  callbackData, switchInlineQuery, switchInlineQueryCurrentChat, pay))
+    fun MutableList<InlineKeyboardButton>.item(
+        text: String,
+        url: String? = null,
+        callbackData: String? = null,
+        switchInlineQuery: String? = null,
+        switchInlineQueryCurrentChat: String? = null,
+        pay: Boolean? = null
+    ) {
+        add(InlineKeyboardButton(text, url, callbackData, switchInlineQuery, switchInlineQueryCurrentChat, pay))
     }
 
     fun asMarkup(): Markup {

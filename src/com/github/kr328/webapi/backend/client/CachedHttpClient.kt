@@ -25,8 +25,8 @@ class CachedHttpClient {
     }
 
     private interface Event
-    private data class NewGetRequestEvent(val url: String, val deferred: CompletableDeferred<String>): Event
-    private data class GetRequestResultEvent(val url: String, val result: String, val throwable: Throwable?): Event
+    private data class NewGetRequestEvent(val url: String, val deferred: CompletableDeferred<String>) : Event
+    private data class GetRequestResultEvent(val url: String, val result: String, val throwable: Throwable?) : Event
 
     private val eventChannel = Channel<Event>(5)
     private val requestMap = mutableMapOf<String, MutableList<CompletableDeferred<String>>>()
@@ -54,26 +54,24 @@ class CachedHttpClient {
     }
 
     private suspend fun process() {
-        for ( event in eventChannel ) {
-            when ( event ) {
+        for (event in eventChannel) {
+            when (event) {
                 is NewGetRequestEvent -> {
                     val deferredList = requestMap[event.url]
 
-                    if ( deferredList == null ) {
+                    if (deferredList == null) {
                         requestMap[event.url] = mutableListOf(event.deferred)
                         doRequest(event.url)
-                    }
-                    else {
+                    } else {
                         deferredList.add(event.deferred)
                     }
                 }
                 is GetRequestResultEvent -> {
                     requestMap.computeIfPresent(event.url) { _, list ->
                         list.forEach {
-                            if ( event.throwable != null ) {
+                            if (event.throwable != null) {
                                 it.completeExceptionally(event.throwable)
-                            }
-                            else {
+                            } else {
                                 it.complete(event.result)
                             }
                         }
@@ -89,7 +87,7 @@ class CachedHttpClient {
         GlobalScope.launch {
             val cached = cache.getIfPresent(url)
 
-            if ( cached != null ) {
+            if (cached != null) {
                 eventChannel.send(GetRequestResultEvent(url, cached, null))
                 return@launch
             }
@@ -100,8 +98,7 @@ class CachedHttpClient {
                 cache.put(url, data)
 
                 eventChannel.send(GetRequestResultEvent(url, data, null))
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 eventChannel.send(GetRequestResultEvent(url, "", e))
             }
         }

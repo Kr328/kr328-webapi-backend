@@ -4,9 +4,12 @@ import com.github.kr328.webapi.bot.bot.Bot
 import com.github.kr328.webapi.bot.bot.network.updates.Update
 import com.github.kr328.webapi.bot.bot.scopes.UpdateScope
 
-class MatchMatcher(private val predict: suspend (Update) -> Boolean, private val handler: suspend UpdateScope.() -> Unit): Matcher() {
+class MatchMatcher(
+    private val predict: suspend (Update) -> Boolean,
+    private val handler: suspend UpdateScope.() -> Unit
+) : Matcher() {
     override suspend fun handleIfMatched(bot: Bot, update: Update): Boolean {
-        if ( !predict(update) )
+        if (!predict(update))
             return false
 
         val scope = UpdateScopeImpl(update, bot)

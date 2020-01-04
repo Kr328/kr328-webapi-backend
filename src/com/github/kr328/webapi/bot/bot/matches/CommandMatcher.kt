@@ -6,18 +6,20 @@ import com.github.kr328.webapi.bot.bot.network.updates.Message
 import com.github.kr328.webapi.bot.bot.network.updates.Update
 import com.github.kr328.webapi.bot.bot.scopes.CommandTextMessageScope
 
-class CommandMatcher(private val command: String,
-                     private val handler: suspend CommandTextMessageScope.() -> Unit): Matcher() {
+class CommandMatcher(
+    private val command: String,
+    private val handler: suspend CommandTextMessageScope.() -> Unit
+) : Matcher() {
     override suspend fun handleIfMatched(bot: Bot, update: Update): Boolean {
         val message = update.message ?: update.editedMessage ?: update.channelPost ?: return false
         val text = message.text ?: return false
 
-        if ( !text.startsWith("/") )
+        if (!text.startsWith("/"))
             return false
 
         val command = text.removePrefix("/").split("@")[0]
 
-        if ( command != this.command )
+        if (command != this.command)
             return false
 
         val scope = MessageScopeImpl(command, text, message, message.chat, update, bot)

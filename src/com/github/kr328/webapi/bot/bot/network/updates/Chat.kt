@@ -3,7 +3,6 @@ package com.github.kr328.webapi.bot.bot.network.updates
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
-import java.lang.IllegalArgumentException
 
 data class Chat(
     @JsonProperty("id") val id: Long,
@@ -26,7 +25,7 @@ data class Chat(
 
         @JsonValue
         override fun toString(): String {
-            return when ( this ) {
+            return when (this) {
                 PRIVATE -> "private"
                 GROUP -> "group"
                 SUPER_GROUP -> "supergroup"
@@ -38,7 +37,7 @@ data class Chat(
             @JvmStatic
             @JsonCreator
             fun fromString(type: String): Type {
-                return when ( type ) {
+                return when (type) {
                     "private" -> PRIVATE
                     "group" -> GROUP
                     "supergroup" -> SUPER_GROUP

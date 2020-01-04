@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
 
@@ -47,7 +46,7 @@ class Bot(token: String, proxy: Proxy? = null) : CoroutineScope {
             while (isRunning) {
                 val updates = client.getUpdates(offset).result
 
-                if ( updates.isEmpty() )
+                if (updates.isEmpty())
                     continue
 
                 for (update in updates) {
@@ -70,8 +69,8 @@ class Bot(token: String, proxy: Proxy? = null) : CoroutineScope {
     }
 
     private suspend fun handleUpdate(update: Update) {
-        for ( matcher in matchers ) {
-            if ( matcher.handleIfMatched(this, update) )
+        for (matcher in matchers) {
+            if (matcher.handleIfMatched(this, update))
                 break
         }
     }

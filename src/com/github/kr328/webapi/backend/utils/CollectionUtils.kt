@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 
-suspend fun <T,R>List<T>.mapParallel(block: suspend (T) -> R): List<R> {
+suspend fun <T, R> List<T>.mapParallel(block: suspend (T) -> R): List<R> {
     return this.asFlow()
         .map {
             GlobalScope.async { block(it) }

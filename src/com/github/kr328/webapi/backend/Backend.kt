@@ -88,7 +88,8 @@ fun Application.module() {
             try {
                 val metadata: Metadata = withContext(Dispatchers.IO) {
                     Defaults.DEFAULT_JSON_MAPPER.readValue<Metadata>(
-                        Constants.DATA_DIR.resolve("$userId/metadata.json"))
+                        Constants.DATA_DIR.resolve("$userId/metadata.json")
+                    )
                 }
 
                 if (secret != metadata.secret)

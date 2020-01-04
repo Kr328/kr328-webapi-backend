@@ -7,8 +7,6 @@ import com.github.kr328.webapi.bot.bot.matches.match
 import com.github.kr328.webapi.bot.bot.matches.text
 import io.ktor.application.Application
 import kotlinx.coroutines.*
-import java.net.InetSocketAddress
-import java.net.Proxy
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
