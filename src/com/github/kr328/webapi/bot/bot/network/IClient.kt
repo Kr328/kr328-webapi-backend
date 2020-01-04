@@ -1,6 +1,7 @@
 package com.github.kr328.webapi.bot.bot.network
 
 import com.github.kr328.webapi.bot.bot.network.markup.Markup
+import com.github.kr328.webapi.bot.bot.network.updates.File
 import com.github.kr328.webapi.bot.bot.network.updates.Update
 import retrofit2.http.*
 
@@ -10,6 +11,11 @@ interface IClient {
         @Query("offset") offset: Long,
         @Query("timeout") timeout: Long = 60
     ): Response<List<Update>>
+
+    @GET("getFile")
+    suspend fun getFile(
+        @Query("file_id") fileId: String
+    ): Response<File>
 
     @FormUrlEncoded
     @POST("sendMessage")

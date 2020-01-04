@@ -1,10 +1,7 @@
 package com.github.kr328.webapi.bot
 
 import com.github.kr328.webapi.bot.bot.Bot
-import com.github.kr328.webapi.bot.bot.matches.callback
-import com.github.kr328.webapi.bot.bot.matches.command
-import com.github.kr328.webapi.bot.bot.matches.match
-import com.github.kr328.webapi.bot.bot.matches.text
+import com.github.kr328.webapi.bot.bot.matches.*
 import io.ktor.application.Application
 import kotlinx.coroutines.*
 
@@ -14,7 +11,7 @@ fun Application.module() {
         val bot = Bot(Constants.TELEGRAM_BOT_TOKEN)
 
         val backgroundTask = async {
-            while (bot.isActive) {
+            while (bot.isRunning) {
                 println("Loop")
                 delay(1000 * 3600)
             }
@@ -22,15 +19,27 @@ fun Application.module() {
 
         bot.onUpdate {
             command("start") {
-                sendText("WDNMD")
+                sendText("Options") {
+                    inlineKeyboard {
+                        row {
+                            item("Generate 204", callbackData = "generate_204")
+                        }
+                        row {
+                            item("Feedback", callbackData = "feedback")
+                        }
+                    }
+                }
+            }
+            command("stop") {
+                bot.shutdown()
+            }
+            callback("generate_204") {
+                replyText("204")
 
-                fallthrough
+                answer()
             }
             text {
                 replyText(text)
-            }
-            match {
-                println("Unknown update $update")
             }
         }
 
@@ -52,6 +61,13 @@ fun main() = runBlocking {
     }
 
     bot.onUpdate {
+        document {
+            replyText("Downloading")
+
+            val data = downloadDocument()
+
+            println(String(data))
+        }
         command("start") {
             sendText("Options") {
                 inlineKeyboard {
@@ -75,15 +91,10 @@ fun main() = runBlocking {
         text {
             replyText(text)
         }
-        match {
-            println("Unknown update $update")
-        }
     }
 
     bot.execPolling()
 
     backgroundTask.cancel()
     bot.shutdown()
-
-    println("Stopped")
 }
