@@ -54,7 +54,7 @@ fun main() = runBlocking {
     bot.onUpdate {
         command("start") {
             sendText("Options") {
-                setInlineKeyboard {
+                inlineKeyboard {
                     row {
                         item("Generate 204", callbackData = "generate_204")
                     }
