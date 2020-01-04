@@ -15,4 +15,12 @@ interface IClient {
                             @Field("text") text: String,
                             @Field("reply_to_message_id") replyToMessageId: Long?,
                             @Field("reply_markup") replyMarkup: Markup?)
+
+    @FormUrlEncoded
+    @POST("answerCallbackQuery")
+    suspend fun answerCallbackQuery(@Field("callback_query_id") callbackQueryId: String,
+                                    @Field("text") text: String?,
+                                    @Field("show_alert") showAlert: Boolean?,
+                                    @Field("url") url: String?,
+                                    @Field("cache_time") cacheTime: Int?)
 }

@@ -15,7 +15,7 @@ class TextMessageMatcher(private val handler: suspend TextMessageScope.() -> Uni
 
         handler(scope)
 
-        return !scope.isFallthrough
+        return !scope.fallthrough
     }
 
     private class TextMessageScopeImpl(
@@ -24,5 +24,5 @@ class TextMessageMatcher(private val handler: suspend TextMessageScope.() -> Uni
         override val chat: Chat,
         override val update: Update,
         override val bot: Bot
-    ) : TextMessageScope, CommonScopeImpl()
+    ) : TextMessageScope, BaseScopeImpl()
 }

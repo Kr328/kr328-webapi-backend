@@ -24,7 +24,7 @@ class CommandMatcher(private val command: String,
 
         handler(scope)
 
-        return !scope.isFallthrough
+        return !scope.fallthrough
     }
 
     private class MessageScopeImpl(
@@ -34,5 +34,5 @@ class CommandMatcher(private val command: String,
         override val chat: Chat,
         override val update: Update,
         override val bot: Bot
-    ) : CommandTextMessageScope, CommonScopeImpl()
+    ) : CommandTextMessageScope, BaseScopeImpl()
 }

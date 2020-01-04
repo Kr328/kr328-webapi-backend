@@ -5,7 +5,7 @@ import com.github.kr328.webapi.bot.bot.markup.MessageMarkupBuilder
 
 interface BaseScope {
     val bot: Bot
-    val fallthrough: Boolean
+    var fallthrough: Boolean
 
     suspend fun stop() {
         bot.shutdown()
@@ -20,5 +20,13 @@ interface BaseScope {
         markupBuilderBlock(markupBuilder)
 
         bot.client.sendMessage(charId, text, replyMessageId, markupBuilder.markup)
+    }
+
+    suspend fun answerCallbackQuery(callbackQueryId: String,
+                                    text: String? = null ,
+                                    showAlert: Boolean? = null,
+                                    url: String? = null,
+                                    cacheTime: Int? = null) {
+        bot.client.answerCallbackQuery(callbackQueryId, text, showAlert, url, cacheTime)
     }
 }

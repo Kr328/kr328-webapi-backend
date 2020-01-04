@@ -1,6 +1,7 @@
 package com.github.kr328.webapi.bot
 
 import com.github.kr328.webapi.bot.bot.Bot
+import com.github.kr328.webapi.bot.bot.matches.callback
 import com.github.kr328.webapi.bot.bot.matches.command
 import com.github.kr328.webapi.bot.bot.matches.match
 import com.github.kr328.webapi.bot.bot.matches.text
@@ -67,6 +68,11 @@ fun main() = runBlocking {
         }
         command("stop") {
             bot.shutdown()
+        }
+        callback("generate_204") {
+            replyText("204")
+
+            answer()
         }
         text {
             replyText(text)

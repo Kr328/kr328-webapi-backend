@@ -13,11 +13,11 @@ class MatchMatcher(private val predict: suspend (Update) -> Boolean, private val
 
         handler(scope)
 
-        return !scope.isFallthrough
+        return !scope.fallthrough
     }
 
     private class UpdateScopeImpl(
         override val update: Update,
         override val bot: Bot
-    ) : UpdateScope, CommonScopeImpl()
+    ) : UpdateScope, BaseScopeImpl()
 }
