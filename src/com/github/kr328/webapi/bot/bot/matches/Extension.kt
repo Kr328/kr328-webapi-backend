@@ -17,7 +17,7 @@ fun MutableList<Matcher>.text(
 }
 
 fun MutableList<Matcher>.callback(
-    data: String,
+    data: String?,
     handler: suspend CallbackQueryScope.() -> Unit
 ) {
     add(CallbackQueryMatcher(data, handler))

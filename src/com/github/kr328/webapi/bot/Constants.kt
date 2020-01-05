@@ -14,6 +14,6 @@ object Constants {
     const val STRING_BUTTON_RESET = "button_reset"
     const val STRING_BUTTON_DELETE = "button_delete"
 
-    const val PRECLASH_GENERATED_LINK = "https://webapi.kr328.app/preclash/%d/%s"
+    const val PRECLASH_GENERATED_LINK = "https://webapi.kr328.app/api/preclash/%d/%s"
     const val FEEDBACK_GROUP_LINK = "https://t.me/joinchat/G1kAIROZs7DS_4IvrL2r-Q"
 }

@@ -188,6 +188,25 @@ fun Application.module() {
                     }
                 }
             }
+
+            callback(null) {
+                sendText(strings.getString(Constants.STRING_MESSAGE_ON_START)) {
+                    inlineKeyboard {
+                        row {
+                            item(
+                                strings.getString(Constants.STRING_BUTTON_GENERATE_PRECLASH),
+                                callbackData = Constants.STRING_BUTTON_GENERATE_PRECLASH
+                            )
+                        }
+                        row {
+                            item(
+                                strings.getString(Constants.STRING_BUTTON_FEEDBACK_GROUP),
+                                url = Constants.FEEDBACK_GROUP_LINK
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         bot.execPolling()
