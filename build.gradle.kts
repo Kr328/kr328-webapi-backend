@@ -33,7 +33,7 @@ java {
 }
 
 application {
-    mainClassName = "com.github.kr328.webapi.ApplicationKt"
+    mainClassName = "com.github.kr328.webapi.MainKt"
 }
 
 repositories {
