@@ -1,7 +1,6 @@
 package com.github.kr328.webapi.backend
 
 import io.ktor.http.ContentType
-import java.io.File
 
 object Constants {
     val REGEX_MATCH_NONE = Regex("", setOf(RegexOption.IGNORE_CASE))

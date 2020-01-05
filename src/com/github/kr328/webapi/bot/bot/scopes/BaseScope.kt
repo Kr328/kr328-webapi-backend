@@ -13,7 +13,6 @@ import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
-import java.lang.IllegalStateException
 
 interface BaseScope {
     val bot: Bot
@@ -53,6 +52,19 @@ interface BaseScope {
         bot.client.deleteMessage(charId, messageId)
     }
 
+    suspend fun editMessageText(
+        charId: Long,
+        messageId: Long,
+        text: String,
+        markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}
+    ): Message {
+        val markupBuilder = MessageMarkupBuilder()
+
+        markupBuilderBlock(markupBuilder)
+
+        return bot.client.editMessageText(charId, messageId, text, "Markdown", markupBuilder.markup).result
+    }
+
     suspend fun getFile(fileId: String): File {
         return bot.client.getFile(fileId).result
     }
@@ -64,13 +76,13 @@ interface BaseScope {
     suspend fun downloadFile(fileId: String): ByteArray {
         val f = getFile(fileId)
 
-        if ( f.filePath == null )
+        if (f.filePath == null)
             throw IllegalStateException("Empty file path")
 
         val request = Request.Builder().url("https://api.telegram.org/file/bot${bot.token}/${f.filePath}").build()
         val deferred = CompletableDeferred<Response>()
 
-        bot.http.newCall(request).enqueue(object: Callback {
+        bot.http.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 deferred.completeExceptionally(e)
             }

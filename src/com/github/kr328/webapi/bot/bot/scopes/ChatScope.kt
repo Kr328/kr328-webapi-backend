@@ -20,4 +20,12 @@ interface ChatScope : UpdateScope {
     ) {
         deleteMessage(chat.id, messageId)
     }
+
+    suspend fun editMessageText(
+        messageId: Long,
+        text: String,
+        markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}
+    ): Message {
+        return editMessageText(chat.id, messageId, text, markupBuilderBlock)
+    }
 }

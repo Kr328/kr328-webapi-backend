@@ -1,7 +1,10 @@
 package com.github.kr328.webapi.bot.bot.network
 
 import com.github.kr328.webapi.bot.bot.network.markup.Markup
-import com.github.kr328.webapi.bot.bot.network.updates.*
+import com.github.kr328.webapi.bot.bot.network.updates.File
+import com.github.kr328.webapi.bot.bot.network.updates.Message
+import com.github.kr328.webapi.bot.bot.network.updates.Update
+import com.github.kr328.webapi.bot.bot.network.updates.UserProfilePhotos
 import retrofit2.http.*
 
 interface IClient {
@@ -47,5 +50,16 @@ interface IClient {
     @POST("deleteMessage")
     suspend fun deleteMessage(
         @Field("chat_id") chatId: Long,
-        @Field("message_id") messageId: Long)
+        @Field("message_id") messageId: Long
+    )
+
+    @FormUrlEncoded
+    @POST("editMessageText")
+    suspend fun editMessageText(
+        @Field("chat_id") chatId: Long,
+        @Field("message_id") messageId: Long,
+        @Field("text") text: String,
+        @Field("parse_mode") parseMode: String?,
+        @Field("reply_markup") replyMarkup: Markup?
+    ): Response<Message>
 }

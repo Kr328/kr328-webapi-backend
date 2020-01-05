@@ -1,6 +1,5 @@
 package com.github.kr328.webapi.bot.bot
 
-import ch.qos.logback.classic.Logger
 import com.github.kr328.webapi.bot.bot.matches.Matcher
 import com.github.kr328.webapi.bot.bot.network.Client
 import com.github.kr328.webapi.bot.bot.network.updates.Update
@@ -12,7 +11,6 @@ import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.lang.Exception
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
 
@@ -76,8 +74,7 @@ class Bot(val token: String, proxy: Proxy? = null) : CoroutineScope {
             try {
                 if (matcher.handleIfMatched(this, update))
                     break
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 logger.warn("Handle failure $update", e)
                 break
             }

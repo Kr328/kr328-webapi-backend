@@ -5,4 +5,4 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 @JsonSerialize
 @JsonDeserialize
-data class Metadata(val username: String?, val userId: Long, val messageId: Long, val secret: String)
+data class Metadata(val username: String?, val userId: Long, val messageId: Long?, val secret: String)

@@ -4,5 +4,5 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class UserProfilePhotos(
     @JsonProperty("total_count") val total: Int,
-    @JsonProperty("photos") val photos: List<PhotoSize>
+    @JsonProperty("photos") val photos: List<List<PhotoSize>>
 )
