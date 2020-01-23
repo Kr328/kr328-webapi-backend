@@ -3,18 +3,20 @@ package com.github.kr328.webapi.bot.bot
 import com.github.kr328.webapi.bot.bot.matches.Matcher
 import com.github.kr328.webapi.bot.bot.network.Client
 import com.github.kr328.webapi.bot.bot.network.updates.Update
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
+import kotlinx.coroutines.*
+import okhttp3.*
 import org.slf4j.LoggerFactory
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import java.io.IOException
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
 
 class Bot(val token: String, proxy: Proxy? = null) : CoroutineScope {
+    companion object {
+        const val CONNECTION_CHECK_URL = "https://www.google.com/generate_204"
+    }
+
     private val job = Job()
     override val coroutineContext = job
     val client: Client
@@ -40,12 +42,37 @@ class Bot(val token: String, proxy: Proxy? = null) : CoroutineScope {
         client = Client(retrofit)
     }
 
+    suspend fun checkConnection() {
+        val request = Request.Builder().head().url(CONNECTION_CHECK_URL).build()
+        val deferred = CompletableDeferred<Unit>()
+
+        http.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                deferred.completeExceptionally(e)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                deferred.complete(Unit)
+            }
+        })
+
+        deferred.await()
+    }
+
     suspend fun execPolling() {
         coroutineScope {
             var offset = 0L
+            var retry = 0
 
-            while (isRunning) {
-                val updates = client.getUpdates(offset).result
+            while (isRunning && retry < 3) {
+                val updates = try {
+                    client.getUpdates(offset).result
+                } catch (e: Exception) {
+                    retry++
+                    continue
+                }
+
+                retry = 0
 
                 if (updates.isEmpty())
                     continue
