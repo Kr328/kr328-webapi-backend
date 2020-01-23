@@ -29,15 +29,18 @@ fun Application.module() {
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build<Long, State>()
 
+        while (true) {
+            try {
+                bot.checkConnection()
+                break
+            } catch (e: Exception) {
+                logger.info("Connection lost, wait 10s")
+                delay(10 * 1000)
+            }
+        }
+
         val backgroundTask = launch {
             while (bot.isRunning) {
-                try {
-                    bot.checkConnection()
-                } catch (e: Exception) {
-                    delay(10 * 1000)
-                    continue
-                }
-
                 for (directory in (File(Commons.DATA_PATH).listFiles() ?: emptyArray())) {
                     if (!directory.isDirectory)
                         continue
@@ -46,7 +49,6 @@ fun Application.module() {
                         bot.client.getUserProfilePhotos(directory.name.toLong(), 0, 1)
                     } catch (e: Exception) {
                         logger.info("Remove deleted profile ${directory.name}")
-
                         directory.deleteRecursively()
                     }
                 }
