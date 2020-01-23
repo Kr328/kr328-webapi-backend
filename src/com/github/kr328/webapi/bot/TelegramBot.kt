@@ -11,7 +11,6 @@ import com.github.kr328.webapi.bot.session.State
 import com.github.kr328.webapi.bot.utils.StoreManager
 import com.google.common.cache.CacheBuilder
 import io.ktor.application.Application
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -29,7 +28,17 @@ fun Application.module() {
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build<Long, State>()
 
-        val backgroundTask = async {
+        while (true) {
+            try {
+                bot.checkConnection()
+                break
+            } catch (e: Exception) {
+                logger.info("Connection lost, wait 10s")
+                delay(10 * 1000)
+            }
+        }
+
+        val backgroundTask = launch {
             while (bot.isRunning) {
                 for (directory in (File(Commons.DATA_PATH).listFiles() ?: emptyArray())) {
                     if (!directory.isDirectory)
@@ -39,7 +48,6 @@ fun Application.module() {
                         bot.client.getUserProfilePhotos(directory.name.toLong(), 0, 1)
                     } catch (e: Exception) {
                         logger.info("Remove deleted profile ${directory.name}")
-
                         directory.deleteRecursively()
                     }
                 }
