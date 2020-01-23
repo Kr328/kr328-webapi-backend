@@ -3,7 +3,6 @@ package com.github.kr328.webapi.bot.utils
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kr328.webapi.Commons
 import com.github.kr328.webapi.bot.bot.Defaults
-import com.github.kr328.webapi.model.Clash
 import com.github.kr328.webapi.model.Metadata
 import com.github.kr328.webapi.model.Preprocessor
 import kotlinx.coroutines.Dispatchers
