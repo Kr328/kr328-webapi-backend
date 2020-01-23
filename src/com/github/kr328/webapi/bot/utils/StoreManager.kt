@@ -5,6 +5,7 @@ import com.github.kr328.webapi.Commons
 import com.github.kr328.webapi.bot.bot.Defaults
 import com.github.kr328.webapi.model.Clash
 import com.github.kr328.webapi.model.Metadata
+import com.github.kr328.webapi.model.Preprocessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -25,7 +26,7 @@ object StoreManager {
     private suspend fun updateConfig(userId: Long, data: ByteArray) = withContext(Dispatchers.IO) {
         val clashFile = File(Commons.DATA_PATH, "$userId/data.yml")
 
-        val clash = Defaults.DEFAULT_YAML_MAPPER.readValue<Clash>(data)
+        val clash = Defaults.DEFAULT_YAML_MAPPER.readValue<Preprocessor>(data)
 
         clashFile.parentFile.mkdirs()
 
