@@ -10,9 +10,10 @@ interface ChatScope : UpdateScope {
     suspend fun sendText(
         text: String,
         replyMessageId: Long? = null,
+        parseMode: String? = "Markdown",
         markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}
     ): Message {
-        return sendTextTo(text, chat.id, replyMessageId, markupBuilderBlock)
+        return sendTextTo(text, chat.id, replyMessageId, parseMode, markupBuilderBlock)
     }
 
     suspend fun deleteMessage(

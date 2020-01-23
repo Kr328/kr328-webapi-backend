@@ -1,6 +1,5 @@
 package com.github.kr328.webapi.bot
 
-import com.fasterxml.jackson.core.JsonParseException
 import com.github.kr328.webapi.Commons
 import com.github.kr328.webapi.bot.bot.Bot
 import com.github.kr328.webapi.bot.bot.matches.callback
@@ -95,11 +94,11 @@ fun Application.module() {
                             }
                         }
                     }
-                } catch (e: JsonParseException) {
-                    sendText(strings.getString(Constants.STRING_MESSAGE_GENERATE_FAILURE).format(e.message))
                 } catch (e: Exception) {
-                    logger.warn("Download document failure", e)
-                    sendText(strings.getString(Constants.STRING_MESSAGE_DOWNLOAD_FAILURE))
+                    sendText(
+                        strings.getString(Constants.STRING_MESSAGE_GENERATE_FAILURE).format(e.message),
+                        parseMode = null
+                    )
                 }
 
                 sessions.invalidate(message.from?.id ?: 0)
@@ -145,11 +144,6 @@ fun Application.module() {
             }
 
             callback(Constants.STRING_BUTTON_DELETE) {
-                if (sessions.getIfPresent(chat.id) != null) {
-                    answer()
-                    return@callback
-                }
-
                 StoreManager.deleteConfig(from.id)
 
                 runCatching {
@@ -158,11 +152,6 @@ fun Application.module() {
             }
 
             callback(Constants.STRING_BUTTON_GENERATE_PRECLASH) {
-                if (sessions.getIfPresent(chat.id) != null) {
-                    answer()
-                    return@callback
-                }
-
                 val message = sendText(strings.getString(Constants.STRING_MESSAGE_SEND_PRECLASH_CONFIG))
 
                 sessions.put(chat.id, PreclashSendFileState(message.messageId))

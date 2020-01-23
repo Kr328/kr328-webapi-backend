@@ -8,9 +8,10 @@ interface MessageScope : ChatScope {
 
     suspend fun replyText(
         text: String,
+        parseMode: String? = "Markdown",
         markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}
     ): Message {
-        return sendText(text, message.messageId, markupBuilderBlock)
+        return sendText(text, message.messageId, parseMode, markupBuilderBlock)
     }
 
     suspend fun delete() {

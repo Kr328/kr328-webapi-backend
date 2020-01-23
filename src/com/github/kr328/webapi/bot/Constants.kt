@@ -6,7 +6,6 @@ object Constants {
     const val STRING_BUTTON_FEEDBACK_GROUP = "button_feedback_group"
     const val STRING_MESSAGE_SEND_PRECLASH_CONFIG = "message_send_preclash_config"
     const val STRING_MESSAGE_DOWNLOADING = "message_downloading"
-    const val STRING_MESSAGE_DOWNLOAD_FAILURE = "message_download_failure"
     const val STRING_MESSAGE_GENERATED_LINK = "message_generated_link"
     const val STRING_MESSAGE_GENERATE_FAILURE = "message_generate_failure"
     const val STRING_MESSAGE_DELETED = "message_deleted"

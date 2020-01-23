@@ -26,13 +26,14 @@ interface BaseScope {
         text: String,
         charId: Long,
         replyMessageId: Long? = null,
+        parseMode: String? = "Markdown",
         markupBuilderBlock: suspend MessageMarkupBuilder.() -> Unit = {}
     ): Message {
         val markupBuilder = MessageMarkupBuilder()
 
         markupBuilderBlock(markupBuilder)
 
-        return bot.client.sendMessage(charId, text, replyMessageId, markupBuilder.markup, "Markdown").result
+        return bot.client.sendMessage(charId, text, replyMessageId, markupBuilder.markup, parseMode).result
     }
 
     suspend fun answerCallbackQuery(
