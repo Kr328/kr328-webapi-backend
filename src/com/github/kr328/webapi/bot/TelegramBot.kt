@@ -12,7 +12,6 @@ import com.github.kr328.webapi.bot.session.State
 import com.github.kr328.webapi.bot.utils.StoreManager
 import com.google.common.cache.CacheBuilder
 import io.ktor.application.Application
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -30,8 +29,15 @@ fun Application.module() {
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build<Long, State>()
 
-        val backgroundTask = async {
+        val backgroundTask = launch {
             while (bot.isRunning) {
+                try {
+                    bot.checkConnection()
+                } catch (e: Exception) {
+                    delay(10 * 1000)
+                    continue
+                }
+
                 for (directory in (File(Commons.DATA_PATH).listFiles() ?: emptyArray())) {
                     if (!directory.isDirectory)
                         continue
